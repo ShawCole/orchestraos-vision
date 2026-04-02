@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OrchestraOS — AI-Powered Business Operations by Shaw Cole</title>
+<meta name="description" content="28 AI agents. One command center. OrchestraOS is the operating system for autonomous business execution.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-primary: #08090d;
+  --bg-secondary: #0d0f14;
+  --bg-card: rgba(255, 255, 255, 0.03);
+  --bg-glass: rgba(255, 255, 255, 0.04);
+  --border: rgba(255, 255, 255, 0.06);
+  --border-bright: rgba(255, 255, 255, 0.12);
+  --text-primary: #f0f0f5;
+  --text-secondary: #8b8fa3;
+  --text-muted: #565a6e;
+  --accent: #6366f1;
+  --accent-bright: #818cf8;
+  --accent-glow: rgba(99, 102, 241, 0.15);
+  --green: #22c55e;
+  --green-glow: rgba(34, 197, 94, 0.15);
+  --amber: #f59e0b;
+  --cyan: #06b6d4;
+  --rose: #f43f5e;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Global background grid */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Utility */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent-bright) 0%, var(--cyan) 50%, var(--green) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.section { padding: 120px 0; position: relative; }
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+  display: block;
+}
+.section-title {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+}
+.section-desc {
+  font-size: 17px;
+  color: var(--text-secondary);
+  max-width: 640px;
+  line-height: 1.7;
+}
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.4; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes typewriter {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.fade-up { opacity: 0; animation: fadeUp 0.8s ease forwards; }
+.fade-up-1 { animation-delay: 0.1s; }
+.fade-up-2 { animation-delay: 0.2s; }
+.fade-up-3 { animation-delay: 0.3s; }
+.fade-up-4 { animation-delay: 0.4s; }
+.fade-up-5 { animation-delay: 0.5s; }
+
+/* Scroll-triggered animations */
+[data-animate] { opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+[data-animate].visible { opacity: 1; transform: translateY(0); }
+
+/* ============ NAV ============ */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 16px 24px;
+  background: rgba(8, 9, 13, 0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  transition: all 0.3s;
+}
+nav .nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+nav .logo {
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text-primary);
+}
+nav .logo-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--cyan) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+nav .nav-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+nav .nav-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+nav .nav-links a:hover { color: var(--text-primary); }
+@media (max-width: 768px) { nav .nav-links { display: none; } }
+
+/* ============ HERO ============ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding-top: 80px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 800px;
+  height: 800px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  top: -200px;
+  right: -200px;
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--green-glow) 0%, transparent 70%);
+  bottom: -100px;
+  left: -200px;
+  pointer-events: none;
+}
+.hero-content { max-width: 800px; }
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 100px;
+  background: var(--accent-glow);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent-bright);
+  margin-bottom: 32px;
+}
+.hero-badge .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  position: relative;
+}
+.hero-badge .dot::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse-ring 2s ease infinite;
+}
+.hero h1 {
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 28px;
+}
+.hero p {
+  font-size: 19px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 580px;
+  margin-bottom: 40px;
+}
+.hero-stats {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.hero-stat .number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+.hero-stat .label {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ============ PROBLEM ============ */
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 48px;
+}
+.problem-card {
+  padding: 32px;
+  border-radius: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  transition: all 0.3s;
+}
+.problem-card:hover {
+  border-color: var(--border-bright);
+  background: var(--bg-glass);
+  transform: translateY(-2px);
+}
+.problem-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(244, 63, 94, 0.1);
+  border: 1px solid rgba(244, 63, 94, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+.problem-card h3 {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.problem-card p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ============ SOLUTION ============ */
+.solution-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  margin-top: 48px;
+}
+@media (max-width: 900px) { .solution-layout { grid-template-columns: 1fr; gap: 40px; } }
+
+.solution-features { display: flex; flex-direction: column; gap: 24px; }
+.solution-feature {
+  display: flex;
+  gap: 16px;
+  padding: 20px;
+  border-radius: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  transition: all 0.3s;
+}
+.solution-feature:hover { border-color: var(--accent); background: var(--accent-glow); }
+.solution-feature .icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--accent-glow);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 18px;
+}
+.solution-feature h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.solution-feature p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
+/* Terminal mockup */
+.terminal {
+  border-radius: 16px;
+  background: #0c0e14;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.03);
+}
+.terminal-header {
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid var(--border);
+}
+.terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.terminal-dot.red { background: #ff5f57; }
+.terminal-dot.yellow { background: #febc2e; }
+.terminal-dot.green { background: #28c840; }
+.terminal-title {
+  flex: 1;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.terminal-body {
+  padding: 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.8;
+  min-height: 320px;
+}
+.terminal-line { margin-bottom: 4px; }
+.terminal-line .prompt { color: var(--green); }
+.terminal-line .cmd { color: var(--text-primary); }
+.terminal-line .output { color: var(--text-secondary); }
+.terminal-line .accent { color: var(--accent-bright); }
+.terminal-line .cyan { color: var(--cyan); }
+.terminal-line .amber { color: var(--amber); }
+
+/* ============ HOW IT WORKS ============ */
+.flow-container { margin-top: 60px; }
+.flow-step {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 24px;
+  padding-bottom: 48px;
+  position: relative;
+}
+.flow-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 39px;
+  top: 64px;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+}
+.flow-number {
+  width: 80px;
+  height: 56px;
+  border-radius: 14px;
+  background: var(--accent-glow);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent-bright);
+  flex-shrink: 0;
+}
+.flow-content h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.flow-content p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 600px;
+}
+.flow-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+.flow-tag {
+  padding: 4px 12px;
+  border-radius: 6px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+/* ============ CLIENT EXPERIENCE ============ */
+.experience-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  margin-top: 48px;
+}
+.experience-card {
+  padding: 36px;
+  border-radius: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+.experience-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+}
+.experience-card:nth-child(1)::before { background: linear-gradient(90deg, var(--accent), transparent); }
+.experience-card:nth-child(2)::before { background: linear-gradient(90deg, var(--cyan), transparent); }
+.experience-card:nth-child(3)::before { background: linear-gradient(90deg, var(--green), transparent); }
+.experience-card:hover {
+  border-color: var(--border-bright);
+  transform: translateY(-3px);
+}
+.experience-card .emoji {
+  font-size: 32px;
+  margin-bottom: 20px;
+  display: block;
+}
+.experience-card h3 {
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.experience-card p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+.experience-card ul {
+  list-style: none;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.experience-card li {
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.experience-card li::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent-bright);
+  flex-shrink: 0;
+}
+
+/* ============ WHAT'S BEEN BUILT ============ */
+.built-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 48px;
+}
+.built-card {
+  padding: 24px;
+  border-radius: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  text-align: center;
+  transition: all 0.3s;
+}
+.built-card:hover { border-color: var(--border-bright); transform: translateY(-2px); }
+.built-card .metric {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 36px;
+  font-weight: 800;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+.built-card:nth-child(1) .metric { color: var(--accent-bright); }
+.built-card:nth-child(2) .metric { color: var(--cyan); }
+.built-card:nth-child(3) .metric { color: var(--green); }
+.built-card:nth-child(4) .metric { color: var(--amber); }
+.built-card:nth-child(5) .metric { color: var(--rose); }
+.built-card:nth-child(6) .metric { color: var(--accent-bright); }
+.built-card .metric-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.built-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 32px;
+}
+.built-detail {
+  padding: 28px;
+  border-radius: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+}
+.built-detail h4 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.built-detail h4 .tag {
+  padding: 2px 10px;
+  border-radius: 6px;
+  background: var(--green-glow);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.built-detail p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ============ WHAT'S NEXT ============ */
+.next-timeline {
+  margin-top: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.next-item {
+  display: flex;
+  gap: 20px;
+  padding: 24px;
+  border-radius: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  transition: all 0.3s;
+  align-items: flex-start;
+}
+.next-item:hover { border-color: var(--border-bright); }
+.next-phase {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-bright);
+  background: var(--accent-glow);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  padding: 4px 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.next-item h4 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.next-item p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
+/* ============ CTA ============ */
+.cta-section {
+  padding: 120px 0;
+  text-align: center;
+  position: relative;
+}
+.cta-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 40% at 50% 50%, var(--accent-glow) 0%, transparent 100%);
+  pointer-events: none;
+}
+.cta-section h2 {
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+}
+.cta-section p {
+  font-size: 17px;
+  color: var(--text-secondary);
+  margin-bottom: 36px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 36px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent) 0%, #4f46e5 100%);
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+  text-decoration: none;
+  transition: all 0.3s;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
+}
+.cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 50px rgba(99, 102, 241, 0.4);
+}
+.cta-button .arrow { transition: transform 0.2s; }
+.cta-button:hover .arrow { transform: translateX(4px); }
+
+/* ============ FOOTER ============ */
+footer {
+  padding: 40px 0;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+footer p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ============ ARCHITECTURE DIAGRAM ============ */
+.arch-container {
+  margin-top: 48px;
+  padding: 40px;
+  border-radius: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.arch-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(6, 182, 212, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+.arch-hub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  position: relative;
+  z-index: 1;
+}
+.arch-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.arch-center-node {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--cyan) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 60px rgba(99, 102, 241, 0.3);
+  animation: float 6s ease-in-out infinite;
+}
+.arch-center-node .icon { font-size: 36px; }
+.arch-center-node .text {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+.arch-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.arch-spokes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  width: 100%;
+  max-width: 800px;
+}
+.arch-spoke {
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  text-align: center;
+  transition: all 0.3s;
+  position: relative;
+}
+.arch-spoke::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  width: 1px;
+  height: 20px;
+  background: linear-gradient(to bottom, transparent, var(--border-bright));
+}
+.arch-spoke:hover { border-color: var(--accent); background: var(--accent-glow); }
+.arch-spoke .spoke-icon { font-size: 20px; margin-bottom: 6px; }
+.arch-spoke .spoke-title { font-size: 12px; font-weight: 600; }
+.arch-spoke .spoke-sub {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ============ PIPELINE ============ */
+.pipeline {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-top: 48px;
+  overflow-x: auto;
+  padding-bottom: 16px;
+}
+.pipeline-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 100px;
+  flex-shrink: 0;
+}
+.pipeline-node {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  transition: all 0.3s;
+}
+.pipeline-step:hover .pipeline-node {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+  transform: translateY(-3px);
+}
+.pipeline-step .label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.3;
+}
+.pipeline-arrow {
+  font-size: 18px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  padding: 0 4px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">O</div>
+      OrchestraOS
+    </a>
+    <ul class="nav-links">
+      <li><a href="#problem">Problem</a></li>
+      <li><a href="#solution">Solution</a></li>
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#client-experience">Experience</a></li>
+      <li><a href="#built">Built</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge fade-up fade-up-1">
+        <span class="dot"></span>
+        28 agents online
+      </div>
+      <h1 class="fade-up fade-up-2">
+        Your entire business,<br>
+        run by <span class="gradient-text">AI agents</span><br>
+        you actually control.
+      </h1>
+      <p class="fade-up fade-up-3">
+        OrchestraOS is the operating system behind Shaw Cole's AI-powered agency.
+        28 autonomous agents across Mac and VPS, coordinated by voice, Telegram,
+        and a real-time dashboard. Deliverables ship while you sleep.
+      </p>
+      <div class="hero-stats fade-up fade-up-4">
+        <div class="hero-stat">
+          <div class="number mono">28</div>
+          <div class="label">AI Agents</div>
+        </div>
+        <div class="hero-stat">
+          <div class="number mono">10</div>
+          <div class="label">Active Projects</div>
+        </div>
+        <div class="hero-stat">
+          <div class="number mono">6</div>
+          <div class="label">Clients Served</div>
+        </div>
+        <div class="hero-stat">
+          <div class="number mono">527</div>
+          <div class="label">Audiences Built</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="section" id="problem">
+  <div class="container">
+    <span class="section-label" data-animate>// The Problem</span>
+    <h2 class="section-title" data-animate>AI tools are everywhere.<br>AI <em>systems</em> are not.</h2>
+    <p class="section-desc" data-animate>
+      Everyone has access to ChatGPT. Nobody has 28 agents that know their codebase,
+      their clients, their roadmaps, and can ship production work autonomously overnight.
+    </p>
+    <div class="problem-grid">
+      <div class="problem-card" data-animate>
+        <div class="problem-icon">&#9888;</div>
+        <h3>Prompt-and-Pray</h3>
+        <p>Most teams use AI as a fancy autocomplete. One prompt, one response, zero persistence. The context vanishes the moment you close the tab.</p>
+      </div>
+      <div class="problem-card" data-animate>
+        <div class="problem-icon">&#8987;</div>
+        <h3>Manual Handoffs</h3>
+        <p>You brief a VA. They brief a designer. They brief a developer. Each handoff leaks context and burns hours. AI should eliminate this chain, not add another link.</p>
+      </div>
+      <div class="problem-card" data-animate>
+        <div class="problem-icon">&#128683;</div>
+        <h3>No Orchestration</h3>
+        <p>Running Claude in a terminal is not a system. There's no coordination between agents, no memory, no project awareness, no way to manage 10 projects at once.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section class="section" id="solution">
+  <div class="container">
+    <span class="section-label" data-animate>// The Solution</span>
+    <h2 class="section-title" data-animate>OrchestraOS</h2>
+    <p class="section-desc" data-animate>
+      A command center that coordinates autonomous AI agents across machines, projects, and clients.
+      One person's infrastructure running like a 30-person agency.
+    </p>
+    <div class="solution-layout" data-animate>
+      <div class="solution-features">
+        <div class="solution-feature">
+          <div class="icon">&#127897;</div>
+          <div>
+            <h4>Voice-First Command</h4>
+            <p>Talk to Jarvis via Telegram or phone. Full awareness of every running agent, project status, and pending decision.</p>
+          </div>
+        </div>
+        <div class="solution-feature">
+          <div class="icon">&#128065;</div>
+          <div>
+            <h4>Real-Time Visibility</h4>
+            <p>See every agent's tmux screen live. Agent cards with status, current task, and focused chat modals for direct interaction.</p>
+          </div>
+        </div>
+        <div class="solution-feature">
+          <div class="icon">&#129504;</div>
+          <div>
+            <h4>5-Layer Memory</h4>
+            <p>Priorities, facts, roadmaps, handoffs, and cross-project relationships. Agents pick up exactly where they left off.</p>
+          </div>
+        </div>
+        <div class="solution-feature">
+          <div class="icon">&#128640;</div>
+          <div>
+            <h4>Ship From Anywhere</h4>
+            <p>Git operations, Netlify deploys, Tailscale serve, project scaffolding. All from your phone, all through the same interface.</p>
+          </div>
+        </div>
+        <div class="solution-feature">
+          <div class="icon">&#127760;</div>
+          <div>
+            <h4>Tailscale Mesh</h4>
+            <p>Mac, VPS, and client devices all on one private network. Agents spawn across machines and share context seamlessly.</p>
+          </div>
+        </div>
+      </div>
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="terminal-dot red"></div>
+          <div class="terminal-dot yellow"></div>
+          <div class="terminal-dot green"></div>
+          <div class="terminal-title">orchestraos ~ jarvis</div>
+        </div>
+        <div class="terminal-body">
+          <div class="terminal-line"><span class="prompt">shaw@hub $</span> <span class="cmd">jarvis status</span></div>
+          <div class="terminal-line"><span class="output">&nbsp;</span></div>
+          <div class="terminal-line"><span class="accent">&#9679; General Manager</span> <span class="output">online</span></div>
+          <div class="terminal-line"><span class="cyan">&#9679; PM-Products</span> <span class="output">reviewing ListMagic PR</span></div>
+          <div class="terminal-line"><span class="cyan">&#9679; PM-Clients</span> <span class="output">processing SalesMatch brief</span></div>
+          <div class="terminal-line"><span class="cyan">&#9679; PM-Infra</span> <span class="output">monitoring Tailscale mesh</span></div>
+          <div class="terminal-line"><span class="output">&nbsp;</span></div>
+          <div class="terminal-line"><span class="output">  Active agents:</span> <span class="accent">28</span></div>
+          <div class="terminal-line"><span class="output">  Projects:</span> <span class="accent">10</span></div>
+          <div class="terminal-line"><span class="output">  Pending approvals:</span> <span class="amber">3</span></div>
+          <div class="terminal-line"><span class="output">  Deploys today:</span> <span class="cyan">7</span></div>
+          <div class="terminal-line"><span class="output">&nbsp;</span></div>
+          <div class="terminal-line"><span class="prompt">shaw@hub $</span> <span class="cmd">jarvis deploy salesmatch</span></div>
+          <div class="terminal-line"><span class="output">  Deploying to Netlify...</span> <span class="cyan">&#10003; live</span></div>
+          <div class="terminal-line"><span class="output">  </span><span class="accent">https://salesmatch-explorer.netlify.app</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how-it-works">
+  <div class="container">
+    <span class="section-label" data-animate>// How It Works</span>
+    <h2 class="section-title" data-animate>From voice note to<br>deployed deliverable.</h2>
+    <p class="section-desc" data-animate>
+      The post-meeting pipeline turns a single client conversation into live audience maps,
+      deployed websites, and actionable data. Fully automated.
+    </p>
+
+    <!-- Pipeline visual -->
+    <div class="pipeline" data-animate>
+      <div class="pipeline-step">
+        <div class="pipeline-node">&#127908;</div>
+        <span class="label">Record<br>Call</span>
+      </div>
+      <span class="pipeline-arrow">&#8594;</span>
+      <div class="pipeline-step">
+        <div class="pipeline-node">&#128221;</div>
+        <span class="label">Transcribe<br>(Whisper)</span>
+      </div>
+      <span class="pipeline-arrow">&#8594;</span>
+      <div class="pipeline-step">
+        <div class="pipeline-node">&#127919;</div>
+        <span class="label">Extract<br>ICP</span>
+      </div>
+      <span class="pipeline-arrow">&#8594;</span>
+      <div class="pipeline-step">
+        <div class="pipeline-node">&#128101;</div>
+        <span class="label">Generate<br>Audiences</span>
+      </div>
+      <span class="pipeline-arrow">&#8594;</span>
+      <div class="pipeline-step">
+        <div class="pipeline-node">&#128506;</div>
+        <span class="label">Build<br>Map</span>
+      </div>
+      <span class="pipeline-arrow">&#8594;</span>
+      <div class="pipeline-step">
+        <div class="pipeline-node">&#128640;</div>
+        <span class="label">Deploy<br>Live</span>
+      </div>
+      <span class="pipeline-arrow">&#8594;</span>
+      <div class="pipeline-step">
+        <div class="pipeline-node">&#128279;</div>
+        <span class="label">Send<br>Link</span>
+      </div>
+    </div>
+
+    <!-- Architecture diagram -->
+    <div class="arch-container" data-animate>
+      <div class="arch-hub">
+        <div class="arch-center">
+          <div class="arch-center-node">
+            <span class="icon">&#127917;</span>
+            <span class="text">Jarvis</span>
+          </div>
+          <span class="arch-label">General Manager</span>
+        </div>
+        <div class="arch-spokes">
+          <div class="arch-spoke">
+            <div class="spoke-icon">&#128187;</div>
+            <div class="spoke-title">Mac Studio</div>
+            <div class="spoke-sub">12 agents</div>
+          </div>
+          <div class="arch-spoke">
+            <div class="spoke-icon">&#9729;</div>
+            <div class="spoke-title">VPS Node</div>
+            <div class="spoke-sub">16 agents</div>
+          </div>
+          <div class="arch-spoke">
+            <div class="spoke-icon">&#128241;</div>
+            <div class="spoke-title">Telegram</div>
+            <div class="spoke-sub">voice + chat</div>
+          </div>
+          <div class="arch-spoke">
+            <div class="spoke-icon">&#128202;</div>
+            <div class="spoke-title">Dashboard</div>
+            <div class="spoke-sub">live view</div>
+          </div>
+          <div class="arch-spoke">
+            <div class="spoke-icon">&#127897;</div>
+            <div class="spoke-title">Voice AI</div>
+            <div class="spoke-sub">ElevenLabs</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detailed flow -->
+    <div class="flow-container">
+      <div class="flow-step" data-animate>
+        <div class="flow-number">01</div>
+        <div class="flow-content">
+          <h3>Discovery Call</h3>
+          <p>Shaw hops on a voice call with the client. The conversation is recorded and streamed to Whisper for real-time transcription.</p>
+          <div class="flow-tags">
+            <span class="flow-tag">Whisper</span>
+            <span class="flow-tag">ElevenLabs PVC</span>
+            <span class="flow-tag">Telegram</span>
+          </div>
+        </div>
+      </div>
+      <div class="flow-step" data-animate>
+        <div class="flow-number">02</div>
+        <div class="flow-content">
+          <h3>ICP Extraction</h3>
+          <p>Claude analyzes the transcript, extracts the ideal customer profile, identifies key firmographic and demographic filters, and proposes 2-4 audience segments.</p>
+          <div class="flow-tags">
+            <span class="flow-tag">Claude API</span>
+            <span class="flow-tag">ICP Builder</span>
+            <span class="flow-tag">Auto-segmentation</span>
+          </div>
+        </div>
+      </div>
+      <div class="flow-step" data-animate>
+        <div class="flow-number">03</div>
+        <div class="flow-content">
+          <h3>Audience Generation</h3>
+          <p>VacuumEngine fires parallel automation against AudienceLab, building each audience segment simultaneously. 7K-41K contacts per segment, fully enriched.</p>
+          <div class="flow-tags">
+            <span class="flow-tag">VacuumEngine</span>
+            <span class="flow-tag">AudienceLab</span>
+            <span class="flow-tag">74-col enrichment</span>
+          </div>
+        </div>
+      </div>
+      <div class="flow-step" data-animate>
+        <div class="flow-number">04</div>
+        <div class="flow-content">
+          <h3>Map + Brief + Deploy</h3>
+          <p>An interactive MapLibre geo dashboard and CMO-ready brief are auto-generated and deployed to Netlify. The client gets a live link before the call is even over.</p>
+          <div class="flow-tags">
+            <span class="flow-tag">MapLibre GL</span>
+            <span class="flow-tag">PMTiles</span>
+            <span class="flow-tag">Netlify</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLIENT EXPERIENCE -->
+<section class="section" id="client-experience">
+  <div class="container">
+    <span class="section-label" data-animate>// The Client Experience</span>
+    <h2 class="section-title" data-animate>Your own AI spoke.<br>Always on. Always building.</h2>
+    <p class="section-desc" data-animate>
+      Each client gets a dedicated VPS with their own Claude Code agents, Telegram bot,
+      and synced Obsidian vault. Shaw manages all spokes from OrchestraOS.
+    </p>
+    <div class="experience-grid">
+      <div class="experience-card" data-animate>
+        <span class="emoji">&#128161;</span>
+        <h3>Your Own AI Assistant</h3>
+        <p>A dedicated Telegram bot that knows your brand, your roadmap, and your preferences. Ask for status updates, approve deliverables, or brainstorm strategy.</p>
+        <ul>
+          <li>Dedicated Claude Code instance</li>
+          <li>Personality-matched AI persona</li>
+          <li>Synced Obsidian knowledge base</li>
+          <li>Real-time approval workflow</li>
+        </ul>
+      </div>
+      <div class="experience-card" data-animate>
+        <span class="emoji">&#127761;</span>
+        <h3>Overnight Autonomy</h3>
+        <p>Co-create a roadmap during the day. Agents build while you sleep. Wake up to pull requests, deployed previews, and progress reports ready for review.</p>
+        <ul>
+          <li>Roadmap-driven task execution</li>
+          <li>Autonomous git operations</li>
+          <li>Morning progress briefings</li>
+          <li>Interactive approval gates</li>
+        </ul>
+      </div>
+      <div class="experience-card" data-animate>
+        <span class="emoji">&#128200;</span>
+        <h3>$0 Data COGS</h3>
+        <p>Through the AudienceLab partnership, audience data that competitors charge thousands for costs nothing. This means industry-crushing pricing passed to you.</p>
+        <ul>
+          <li>74-column enrichment</li>
+          <li>~60% resolution rate</li>
+          <li>527 audiences built and counting</li>
+          <li>From $2K CAC to fractional</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT'S BEEN BUILT -->
+<section class="section" id="built">
+  <div class="container">
+    <span class="section-label" data-animate>// What's Been Built</span>
+    <h2 class="section-title" data-animate>This isn't a pitch deck.<br>It's a <span class="gradient-text">running system</span>.</h2>
+    <p class="section-desc" data-animate>
+      Every component listed here is built, deployed, and in production use today.
+    </p>
+    <div class="built-grid" data-animate>
+      <div class="built-card">
+        <div class="metric">28</div>
+        <div class="metric-label">AI Agents</div>
+      </div>
+      <div class="built-card">
+        <div class="metric">10</div>
+        <div class="metric-label">Projects</div>
+      </div>
+      <div class="built-card">
+        <div class="metric">6</div>
+        <div class="metric-label">Clients</div>
+      </div>
+      <div class="built-card">
+        <div class="metric">33</div>
+        <div class="metric-label">Tenants</div>
+      </div>
+      <div class="built-card">
+        <div class="metric">527</div>
+        <div class="metric-label">Audiences</div>
+      </div>
+      <div class="built-card">
+        <div class="metric">5</div>
+        <div class="metric-label">Memory Layers</div>
+      </div>
+    </div>
+    <div class="built-details" data-animate>
+      <div class="built-detail">
+        <h4>Agent Orchestration <span class="tag">Complete</span></h4>
+        <p>Registry, dispatcher, spawn system, scoped memory, cross-machine failover, and overnight autonomy. Auto-discovery of all Claude Code instances across tmux sessions.</p>
+      </div>
+      <div class="built-detail">
+        <h4>Comms Layer <span class="tag">Complete</span></h4>
+        <p>Telegram bot with voice note support (Whisper transcription), WhatsApp backup, web dashboard with agent cards and focused chat modals, ElevenLabs voice AI.</p>
+      </div>
+      <div class="built-detail">
+        <h4>Voice AI PMs <span class="tag">Complete</span></h4>
+        <p>Three ElevenLabs ConvAI voice agents (Shane, Vanessa, Brian) for Products, Clients, and Infrastructure. Invoke via Telegram for live voice brainstorm calls.</p>
+      </div>
+      <div class="built-detail">
+        <h4>Living Project Intelligence <span class="tag">Complete</span></h4>
+        <p>Machine-parseable ROADMAPs across all projects. PM startup rituals auto-read roadmaps and handoffs. Dashboard parses progress, blockers, and staleness in real-time.</p>
+      </div>
+      <div class="built-detail">
+        <h4>Hub-Spoke Architecture <span class="tag">Complete</span></h4>
+        <p>Client provisioning via hub-spoke topology. Each spoke gets assistant-daemon, smart-prompt, Telegram bot, daily briefing, Obsidian vault sync via Syncthing.</p>
+      </div>
+      <div class="built-detail">
+        <h4>Data Engine <span class="tag">Complete</span></h4>
+        <p>VacuumEngine automation, 39-filter taxonomy with 3,451 options, audience estimator v3, geo dashboard with PMTiles + MapLibre GL + PostgreSQL materialized views.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT'S NEXT -->
+<section class="section" id="next">
+  <div class="container">
+    <span class="section-label" data-animate>// What's Next</span>
+    <h2 class="section-title" data-animate>The roadmap is the moat.</h2>
+    <p class="section-desc" data-animate>
+      Each phase compounds on the last. The further this runs, the harder it is to replicate.
+    </p>
+    <div class="next-timeline" data-animate>
+      <div class="next-item">
+        <span class="next-phase">PHASE 1</span>
+        <div>
+          <h4>Voice-to-Audience AI</h4>
+          <p>Speak a client description. Claude extracts the ICP. VacuumEngine builds the audience. Map deploys automatically. End-to-end in minutes, not hours.</p>
+        </div>
+      </div>
+      <div class="next-item">
+        <span class="next-phase">PHASE 2</span>
+        <div>
+          <h4>Multi-Audience Generation</h4>
+          <p>Parallel VacuumEngine instances building 4+ audience segments simultaneously. One discovery call produces a complete audience portfolio.</p>
+        </div>
+      </div>
+      <div class="next-item">
+        <span class="next-phase">PHASE 3</span>
+        <div>
+          <h4>Instant Map Deployment</h4>
+          <p>Template engine that takes any audience CSV and produces a fully interactive geo dashboard. Deploy to Netlify with a single command.</p>
+        </div>
+      </div>
+      <div class="next-item">
+        <span class="next-phase">PHASE 5</span>
+        <div>
+          <h4>Meta Custom Audience Sync</h4>
+          <p>Direct pipeline from audience generation to Meta Ads Manager. The core monetization play that turns data into ad spend ROI.</p>
+        </div>
+      </div>
+      <div class="next-item">
+        <span class="next-phase">PHASE 9</span>
+        <div>
+          <h4>Self-Serve SaaS</h4>
+          <p>Multi-tenant platform with Stripe billing. Free tier through $1,497/mo enterprise. Embeddable widget SDK for partner integration.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <h2 class="fade-up" data-animate>This is what one person<br>with the right <span class="gradient-text">system</span> can build.</h2>
+    <p data-animate>OrchestraOS is the operating system for the AI-native agency. If you want to see it in action, let's talk.</p>
+    <a href="https://t.me/ShawCole" class="cta-button" data-animate>
+      Reach out on Telegram
+      <span class="arrow">&#8594;</span>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p>Built by Shaw Cole &middot; OrchestraOS &middot; 2026</p>
+  </div>
+</footer>
+
+<script>
+// Scroll-triggered animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+
+// Smooth nav background
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+  const nav = document.querySelector('nav');
+  const scroll = window.scrollY;
+  if (scroll > 100) {
+    nav.style.background = 'rgba(8, 9, 13, 0.95)';
+  } else {
+    nav.style.background = 'rgba(8, 9, 13, 0.8)';
+  }
+  lastScroll = scroll;
+});
+
+// Counter animation for hero stats
+function animateCounter(el, target) {
+  let current = 0;
+  const increment = target / 40;
+  const timer = setInterval(() => {
+    current += increment;
+    if (current >= target) {
+      current = target;
+      clearInterval(timer);
+    }
+    el.textContent = Math.floor(current);
+  }, 30);
+}
+
+const statObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const numberEl = entry.target;
+      const target = parseInt(numberEl.textContent);
+      animateCounter(numberEl, target);
+      statObserver.unobserve(numberEl);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.hero-stat .number').forEach(el => statObserver.observe(el));
+</script>
+</body>
+</html>
